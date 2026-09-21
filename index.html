@@ -480,7 +480,7 @@ html,body{background:var(--paper);}
         <p class="screen-sub" id="today-sub"></p>
       </div>
       <button class="add-fab" id="add-goal-btn" aria-label="Add a new goal"><svg class="icon"><use href="#ic-plus"></use></svg></button>
-      <span class="weektag" id="today-weektag"></span>
+      <span class="weektag" id="hijri-date" dir="rtl" lang="ar"></span>
     </div>
     <div class="screen">
 
@@ -657,6 +657,12 @@ function datesBetween(start,end){
   while(d<=end){ out.push(new Date(d)); d=addDays(d,1); }
   return out;
 }
+let hijriFormatter = null;
+try{ hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {day:'numeric', month:'long', year:'numeric'}); }catch(e){}
+function fmtHijri(d){
+  if(!hijriFormatter) return '';
+  try{ return hijriFormatter.format(d); }catch(e){ return ''; }
+}
 
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
 const TODAY_ISO = iso(TODAY);
@@ -825,8 +831,7 @@ let openAcc = new Set(["prayers"]);
 function renderToday(){
   document.getElementById("today-title").textContent = fmtWeekday(TODAY);
   document.getElementById("today-sub").textContent = fmtShort(TODAY);
-  const {weekNum} = weekInfoFor(TODAY);
-  document.getElementById("today-weektag").textContent = `Week ${weekNum} of ${QUARTER_WEEKS}`;
+  document.getElementById("hijri-date").textContent = fmtHijri(TODAY);
 
   let doneTotal=0, allTotal=0, openSections=0;
   const sectionsHtml = CATEGORIES.map(cat=>{

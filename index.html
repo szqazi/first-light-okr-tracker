@@ -295,11 +295,10 @@ h1{
 }
 .qring{
   width:96px;height:96px;border-radius:50%;margin:0 auto 10px;
-  background:conic-gradient(var(--accent) 0 10.9%, var(--track) 10.9% 100%);
   display:flex;align-items:center;justify-content:center;
 }
-.qring::after{
-  content:"10.9%";width:74px;height:74px;border-radius:50%;background:var(--surface);
+.qring-inner{
+  width:74px;height:74px;border-radius:50%;background:var(--surface);
   display:flex;align-items:center;justify-content:center;
   font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;
 }
@@ -376,9 +375,12 @@ html,body{background:var(--paper);}
 .page{max-width:480px;margin:0 auto;padding:0;color:var(--ink);}
 .app{display:flex;flex-direction:column;height:100dvh;}
 .topbar{
-  flex-shrink:0;display:flex;justify-content:center;
-  padding:calc(env(safe-area-inset-top) + 10px) 0 4px;background:var(--paper);
+  flex-shrink:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;
+  padding:calc(env(safe-area-inset-top) + 10px) 16px 8px;background:var(--paper);
 }
+.topbar-date{min-width:0;}
+.topbar-date .screen-title{font-size:19px;}
+.topbar .weektag{justify-self:end;}
 .add-fab{
   width:42px;height:42px;border-radius:50%;border:none;
   background:var(--accent);color:var(--surface);
@@ -473,7 +475,12 @@ html,body{background:var(--paper);}
 <div class="page">
   <div class="app">
     <div class="topbar">
+      <div class="topbar-date">
+        <p class="screen-title" id="today-title">Today</p>
+        <p class="screen-sub" id="today-sub"></p>
+      </div>
       <button class="add-fab" id="add-goal-btn" aria-label="Add a new goal"><svg class="icon"><use href="#ic-plus"></use></svg></button>
+      <span class="weektag" id="today-weektag"></span>
     </div>
     <div class="screen">
 
@@ -483,14 +490,6 @@ html,body{background:var(--paper);}
       </div>
 
       <div class="pane active" id="pane-today">
-        <div class="screen-head">
-          <div>
-            <p class="screen-title" id="today-title">Today</p>
-            <p class="screen-sub" id="today-sub"></p>
-          </div>
-          <span class="weektag" id="today-weektag"></span>
-        </div>
-
         <div class="dayring">
           <div class="ring" id="day-ring"></div>
           <div class="dayring-text">
@@ -929,7 +928,7 @@ function renderQuarterList(){
 
   const overall = OBJECTIVES.length ? Math.round(OBJECTIVES.reduce((a,o)=>a+objectiveAvgPct(o,dates),0)/OBJECTIVES.length) : 0;
   document.getElementById("q-ring").style.background = `conic-gradient(var(--accent) 0 ${overall}%, var(--track) ${overall}% 100%)`;
-  document.getElementById("q-ring").innerHTML = `<div style="width:74px;height:74px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;">${overall}%</div>`;
+  document.getElementById("q-ring").innerHTML = `<div class="qring-inner">${overall}%</div>`;
 
   const {weekNum} = weekInfoFor(TODAY);
   const pace = Math.round(weekNum/QUARTER_WEEKS*100);

@@ -380,7 +380,8 @@ html,body{background:var(--paper);}
 }
 .topbar-date{min-width:0;}
 .topbar-date .screen-title{font-size:19px;}
-.topbar .weektag{justify-self:end;}
+.topbar-hijri{min-width:0;text-align:right;}
+.topbar-hijri .screen-title{font-size:19px;}
 .add-fab{
   width:42px;height:42px;border-radius:50%;border:none;
   background:var(--accent);color:var(--surface);
@@ -480,7 +481,10 @@ html,body{background:var(--paper);}
         <p class="screen-sub" id="today-sub"></p>
       </div>
       <button class="add-fab" id="add-goal-btn" aria-label="Add a new goal"><svg class="icon"><use href="#ic-plus"></use></svg></button>
-      <span class="weektag" id="hijri-date" dir="rtl" lang="ar"></span>
+      <div class="topbar-hijri" dir="rtl" lang="ar">
+        <p class="screen-title" id="hijri-weekday"></p>
+        <p class="screen-sub" id="hijri-date"></p>
+      </div>
     </div>
     <div class="screen">
 
@@ -657,11 +661,18 @@ function datesBetween(start,end){
   while(d<=end){ out.push(new Date(d)); d=addDays(d,1); }
   return out;
 }
-let hijriFormatter = null;
-try{ hijriFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {day:'numeric', month:'long', year:'numeric'}); }catch(e){}
-function fmtHijri(d){
-  if(!hijriFormatter) return '';
-  try{ return hijriFormatter.format(d); }catch(e){ return ''; }
+let hijriWeekdayFormatter = null, hijriDateFormatter = null;
+try{
+  hijriWeekdayFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {weekday:'long'});
+  hijriDateFormatter = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {day:'numeric', month:'long'});
+}catch(e){}
+function fmtHijriWeekday(d){
+  if(!hijriWeekdayFormatter) return '';
+  try{ return hijriWeekdayFormatter.format(d); }catch(e){ return ''; }
+}
+function fmtHijriDate(d){
+  if(!hijriDateFormatter) return '';
+  try{ return hijriDateFormatter.format(d); }catch(e){ return ''; }
 }
 
 const TODAY = new Date(); TODAY.setHours(0,0,0,0);
@@ -831,7 +842,8 @@ let openAcc = new Set(["prayers"]);
 function renderToday(){
   document.getElementById("today-title").textContent = fmtWeekday(TODAY);
   document.getElementById("today-sub").textContent = fmtShort(TODAY);
-  document.getElementById("hijri-date").textContent = fmtHijri(TODAY);
+  document.getElementById("hijri-weekday").textContent = fmtHijriWeekday(TODAY);
+  document.getElementById("hijri-date").textContent = fmtHijriDate(TODAY);
 
   let doneTotal=0, allTotal=0, openSections=0;
   const sectionsHtml = CATEGORIES.map(cat=>{

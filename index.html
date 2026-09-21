@@ -375,9 +375,22 @@ h2{
 html,body{background:var(--paper);}
 .page{max-width:480px;margin:0 auto;padding:0;color:var(--ink);}
 .app{display:flex;flex-direction:column;height:100dvh;}
+.topbar{
+  flex-shrink:0;display:flex;justify-content:center;
+  padding:calc(env(safe-area-inset-top) + 10px) 0 4px;background:var(--paper);
+}
+.add-fab{
+  width:42px;height:42px;border-radius:50%;border:none;
+  background:var(--accent);color:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 16px -6px var(--shadow);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.add-fab svg{width:22px;height:22px;stroke-width:2.4;}
+.add-fab:active{transform:scale(0.93);}
 .screen{
   flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
-  padding:calc(env(safe-area-inset-top) + 16px) 16px 10px;
+  padding:4px 16px 10px;
   border-radius:0;height:auto;background:var(--paper);
 }
 .tabbar{
@@ -459,6 +472,9 @@ html,body{background:var(--paper);}
 
 <div class="page">
   <div class="app">
+    <div class="topbar">
+      <button class="add-fab" id="add-goal-btn" aria-label="Add a new goal"><svg class="icon"><use href="#ic-plus"></use></svg></button>
+    </div>
     <div class="screen">
 
       <div id="ios-hint" class="ios-hint" style="display:none;">
@@ -1035,6 +1051,22 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     if(btn.dataset.tab==='week') renderWeek();
     if(btn.dataset.tab==='quarter') renderQuarterList();
   });
+});
+
+/* ---------- add goal (UI placeholder — no backend yet) ---------- */
+
+document.getElementById('add-goal-btn').addEventListener('click',()=>{
+  document.getElementById('modal-root').innerHTML = `
+    <div class="modal-backdrop" id="modal-backdrop">
+      <div class="modal">
+        <div class="modal-head"><p class="modal-title">Add a new goal</p><span class="modal-close" id="modal-close"><svg class="icon"><use href="#ic-x"></use></svg></span></div>
+        <p class="field-label">Creating new objectives isn't wired up yet — this is just the button for now.</p>
+        <div class="modal-actions"><button class="btn btn-primary" id="add-goal-ok">Got it</button></div>
+      </div>
+    </div>`;
+  document.getElementById('modal-close').addEventListener('click',closeModal);
+  document.getElementById('add-goal-ok').addEventListener('click',closeModal);
+  document.getElementById('modal-backdrop').addEventListener('click',e=>{ if(e.target.id==='modal-backdrop') closeModal(); });
 });
 
 /* ---------- iOS "add to home screen" hint ---------- */

@@ -1,4 +1,4 @@
-const CACHE = "first-light-v4";
+const CACHE = "first-light-v5";
 const ASSETS = [
   "./",
   "./index.html",

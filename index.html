@@ -217,7 +217,9 @@ h1{
 }
 .acc-head i.cat{font-size:17px;color:var(--accent-strong);}
 .acc-name{font-size:14px;font-weight:500;flex:1;}
-.acc-frac{font-size:12px;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+.acc-bar{width:56px;height:6px;flex-shrink:0;border-radius:3px;background:var(--track);overflow:hidden;display:inline-block;}
+.acc-bar-fill{display:block;height:100%;border-radius:3px;background:var(--accent);}
+.acc-bar-fill.full{background:var(--good);}
 .acc-chev{font-size:15px;color:var(--ink-mute);transition:transform .18s ease;}
 .acc.open .acc-chev{transform:rotate(180deg);}
 .acc-body{
@@ -859,7 +861,7 @@ function renderToday(){
       <div class="acc-head" data-acc-head>
         <svg class="icon cat"><use href="#${cat.icon}"></use></svg>
         <span class="acc-name">${cat.title}</span>
-        <span class="acc-frac">${done}/${total}</span>
+        <span class="acc-bar" role="img" aria-label="${done} of ${total} done"><span class="acc-bar-fill${done>=total&&total>0?" full":""}" style="width:${total?Math.round(done/total*100):0}%"></span></span>
         <svg class="icon acc-chev"><use href="#ic-chevron"></use></svg>
       </div>
       <div class="acc-body">${body}</div>
